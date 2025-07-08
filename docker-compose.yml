@@ -6,13 +6,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ellis_api
-    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    # The command now uses the PORT environment variable, making it consistent with Cloud Run.
+    # The --reload flag is removed for production, but you can add it back for development if needed.
+    command: sh -c "uvicorn app:app --host 0.0.0.0 --port $$PORT"
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=sqlite:////app/escola.db
+      - PORT=8000
     networks:
       - ellis_network
 

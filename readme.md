@@ -1,6 +1,4 @@
-# Imersão DevOps - Alura Google Clouddocker version
-
-Este projeto é uma API desenvolvida com FastAPI para gerenciar alunos, cursos e matrículas em uma instituição de ensino.
+#Este projeto é uma API desenvolvida com FastAPI para gerenciar alunos, cursos e matrículas em uma instituição de ensino.
 
 ## Pré-requisitos
 

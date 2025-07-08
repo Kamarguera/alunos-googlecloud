@@ -1,24 +1,12 @@
-﻿version: "3.9"
-
-services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ellis_api
-    # The command now uses the PORT environment variable, making it consistent with Cloud Run.
-    # The --reload flag is removed for production, but you can add it back for development if needed.
-    command: sh -c "uvicorn app:app --host 0.0.0.0 --port $$PORT"
-    volumes:
-      - .:/app
+﻿services:
+  # Serviço da sua aplicação FastAPI
+  app:
+    build: . # Constrói a imagem a partir do Dockerfile na raiz do projeto
+    container_name: api # Nome do container
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=sqlite:////app/escola.db
-      - PORT=8000
-    networks:
-      - ellis_network
-
-networks:
-  ellis_network:
-    driver: bridge
+      - "8000:8000" # Mapeia a porta 8000 do host para a porta 8000 do container
+                    # (conforme definido no seu Dockerfile com EXPOSE 8000 e CMD)
+    volumes:
+      - .:/app # Monta o diretório atual (onde está seu código) em /app dentro do container.
+               # Isso é ótimo para desenvolvimento, pois as alterações no código
+               # são refletidas automaticamente no container devido ao --reload do uvicorn.

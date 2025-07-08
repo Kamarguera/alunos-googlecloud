@@ -1,31 +1,19 @@
-﻿# Use the official lightweight Python image based on Alpine
-FROM python:3.12-alpine
+﻿FROM python:3.13.4-alpine3.22
 
-# Prevent python from writing .pyc files and ensure output is sent to terminal
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-# Set the working directory in the container
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Create a non-root user and group to run the application for better security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-# Copy only the requirements file to leverage Docker's layer caching
-COPY --chown=appuser:appgroup requirements.txt .
-
-# Install any needed packages specified in requirements.txt
-# Use --no-cache-dir to keep the image size small
+# Copia o arquivo de requisitos e instala as dependências
+# Usamos --no-cache-dir para evitar o cache do pip, reduzindo o tamanho da imagem
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
-COPY --chown=appuser:appgroup . .
+# Copia o restante do código da aplicação para o diretório de trabalho
+COPY . .
 
-# Switch to the non-root user
-USER appuser
-
-# Make port 8000 available to the world outside this container
+# Expõe a porta que a aplicação FastAPI irá rodar (padrão é 8000)
 EXPOSE 8000
 
-# Run the application using uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Comando para rodar a aplicação usando uvicorn
+# O host 0.0.0.0 permite que a aplicação seja acessível externamente ao contêiner
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000",  "--reload"]
